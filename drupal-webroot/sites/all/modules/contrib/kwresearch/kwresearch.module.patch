@@ -1,0 +1,13 @@
+--- kwresearch.module	2013-06-17 16:02:16.000000000 +0200
++++ kwresearch.module.new	2013-11-29 10:35:29.432207896 +0100
+@@ -1030,6 +1030,10 @@
+ function kwresearch_node_save($node) {
+   static $vocab_filtered = FALSE;
+ 
++  if (!isset($node->kwresearch_sync_vocab)) {
++    $node->kwresearch_sync_vocab = 0;
++  }
++
+   if (!$kw_vid = $node->kwresearch_sync_vocab) {
+     return;
+   }

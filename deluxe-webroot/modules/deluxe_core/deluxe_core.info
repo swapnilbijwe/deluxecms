@@ -1,0 +1,6 @@
+name = Deluxe Core
+package = Deluxe
+description = Enhance and alter drupal default flow as per requirement.
+version = "7.x-1.0"
+core = "7.x"
+project = "deluxe_core"

@@ -1,0 +1,122 @@
+/* This file will hold styles for the mobile version of your website (mobile first). */
+/* This also can include ANY global CSS that applies site-wide. Unless overwritten by a more specific style rule, CSS declarations in global.css will apply site-wide. */
+
+#zone-branding-wrapper,
+#zone-menu-wrapper,
+#zone-header-wrapper,
+.pane-homepage-slider .pane-content,
+.panel-pane.pane-node,
+#zone-footer-wrapper,
+.node-type-product .pane-products-promotion .pane-content,
+#product-describ, #product-tabs,
+#page-title,
+.pane-categoty-products{
+  width: 1024px;
+  margin: 0 auto;
+  float: none;
+}
+#breadcrumb {
+  position: relative;
+  left: 10.5em;
+  width: 500px;
+  padding-bottom: 10px;
+}
+.pane-homepage-slider{
+  background: none repeat scroll 0 0 #f5f5f5;
+  border-bottom: 1px solid #e3e3e3;
+  padding: 20px 0;
+}
+#block-panels-mini-clone-of-header{
+  margin: 0 auto;
+  max-width: 1024px;
+  padding: 27px 28px 25px;
+}
+.copyright{
+  font-size: 10px;
+  letter-spacing: 0.3px;
+  padding: 35px 0;
+  text-align: center;
+}
+#region-footer-first ul li.leaf{
+  padding: 3px 0;
+  width: 90%;
+  list-style: none;
+}
+#region-footer-first ul li.leaf a{
+  color: #00a0d3;
+}
+/* pdp page*/
+.node-type-product .pane-products-promotion img{
+  color: transparent;
+}
+.views-field-field-banner-image .field-content{
+  min-height: 200px;
+}
+#region-content{
+  margin-left: 0px;
+  margin-right: 0px;
+}
+.node-type-product .pane-products-promotion {
+  background: none repeat scroll 0 0 #f5f5f5;
+}
+/*tabs*/
+#product-tabs .pane-content{
+    font-size: 14px;
+    margin: 59px auto 0;
+}
+
+.ui-widget-content{
+   background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
+    color: #222222;
+    border:0;
+}
+.ui-corner-all {
+    border-radius: 0px;
+}
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default{
+  background: none repeat scroll 0 0 #bebec1;
+  color: #333;
+  display: block;
+  font-weight: 700;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  text-decoration: none;
+}
+.ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited{
+  background: none repeat scroll 0 0 #f7f7f7;
+  border-color: #e0e0e0 #e0e0e0 -moz-use-text-color;
+  border-image: none;
+  border-style: solid solid none;
+  border-width: 1px 1px 0;
+  height: 42px;
+  line-height: 52px;
+  margin: -12px 0 0;
+  color: #333;
+  display: block;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+}
+.ui-tabs .ui-tabs-nav li a{
+  width: 150px;
+}
+.container-12 .block .omega-grid, .container-16 .block .omega-grid, .container-24 .block .omega-grid{
+  margin: 0;
+}
+.breadcrumbs li {
+  list-style: none;
+  float: left;
+  margin-right: 4px;
+}
+
+.section-wrapper .product-button a, .section-wrapper .product-button h1{
+  letter-spacing: normal;
+}
+.field-type-text-with-summary .section-title{
+  background: url("../images/separator-horizontal.png") no-repeat scroll center 22px rgba(0, 0, 0, 0);
+  font-size: 14px;
+  margin: 23px auto 17px;
+  min-height: 37px;
+  text-align: center;
+}

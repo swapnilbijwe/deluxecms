@@ -1,0 +1,7 @@
+name = PDP calculator API
+package = Deluxe
+description = Generate PDP calculator API
+version = "7.x-1.0"
+core = "7.x"
+project = "pdp_calculator"
+dependencies[] = deluxe_core

@@ -1,0 +1,106 @@
+#block-deluxe-user-header-user-menu {
+    float: right;
+    font-size: 10px;
+    min-height: 86px;
+  }
+
+#block-deluxe-user-header-user-menu .user-name {
+    color: #686868;
+}
+.branding-data {
+  float: left;
+}
+#block-deluxe-user-header-user-menu .info-panel .my-account {
+    margin: 0 0 0 6px;
+}
+#block-deluxe-user-header-user-menu .info-panel > div {
+    float: left;
+    margin: 0 0 0 10px;
+}
+.has-dropdown {
+    position: relative;
+}
+#block-deluxe-user-header-user-menu  .info-panel .dropdown {
+    margin: 0 0 0 -35%;
+    padding: 15px;
+    z-index: 40;
+}
+
+#block-deluxe-user-header-user-menu  .has-dropdown .dropdown {
+    display: none;
+    position: absolute;
+}
+#block-deluxe-user-header-user-menu .info-panel .my-account > a::after {
+  background: url("../images/sprite.png") no-repeat scroll -20px -60px rgba(0, 0, 0, 0);
+  content: " ";
+  height: 13px;
+  left: 4px;
+  position: absolute;
+  top: 2px;
+  width: 12px;
+}
+
+#block-deluxe-user-header-user-menu .info-panel .dropdown-menu {
+  background: none repeat scroll 0 0 #fafafa;
+  border: 1px solid #e5e5e5;
+  border-radius: 5px;
+  box-shadow: 0 0 12px rgba(1, 1, 1, 0.15);
+  overflow: hidden;
+  padding: 0 0 8px;
+  width: 145px;
+}
+
+#block-deluxe-user-header-user-menu .info-panel .dropdown-menu li a {
+  color: #333;
+  display: block;
+  font-size: 12px;
+  letter-spacing: 0;
+  line-height: 29px;
+  padding: 0 20px;
+}
+
+#block-deluxe-user-header-user-menu .info-panel > div > a:hover {
+    text-decoration: underline;
+}
+#block-deluxe-user-header-user-menu .info-panel .my-account > a {
+    position: relative;
+}
+#block-deluxe-user-header-user-menu .info-panel > div > a {
+    display: block;
+    padding: 0 0 0 27px;
+    text-decoration: none;
+}
+#block-deluxe-user-header-user-menu .control-panel a {
+    color: #00a0d3;
+}
+#login-dropdown:hover .dropdown {
+    display: block;
+}
+
+#block-deluxe-user-header-user-menu .info-panel .dropdown .arrow-top {
+  background: url("../images/sprite.png") no-repeat scroll -40px -60px rgba(0, 0, 0, 0);
+  height: 13px;
+  left: 50%;
+  margin: 0 0 0 -13px;
+  position: absolute;
+  top: 3px;
+  width: 26px;
+}
+
+#block-deluxe-user-header-user-menu  .info-panel .cart > a::after {
+  background: url("../images/sprite.png") no-repeat scroll 0 -60px rgba(0, 0, 0, 0);
+  content: " ";
+  height: 15px;
+  left: 2px;
+  position: absolute;
+  top: 0;
+  width: 15px;
+}
+#block-deluxe-user-header-user-menu  .info-panel .cart > a {
+    position: relative;
+}
+#block-deluxe-user-header-user-menu .info-panel > div > a {
+  display: block;
+  padding: 0 0 0 27px;
+  text-decoration: none;
+}

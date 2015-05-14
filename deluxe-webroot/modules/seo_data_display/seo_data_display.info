@@ -1,0 +1,7 @@
+name = Seo data display
+package = Deluxe
+description = Manage seo data for all pages usig webpageid.
+version = "7.x-1.0"
+core = "7.x"
+project = "seo_data_display"
+dependencies[] = deluxe_core

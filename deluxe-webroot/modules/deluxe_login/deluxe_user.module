@@ -1,0 +1,175 @@
+<?php
+
+/* Implement header user menus block*/
+function deluxe_user_block_info() {
+  $blocks = array();
+
+  $blocks['header_user_menu'] = array(
+    'info' => t('User menu links and info'),
+  );
+
+  return $blocks;
+}
+
+function deluxe_user_block_view($delta='') {
+  $block = array();
+  switch ($delta) {
+    case 'header_user_menu':
+      $block['subject'] = t('User menu links and info');
+      $block['content'] = deluxe_user_block_content();
+      break;
+  }
+
+  return $block;
+}
+
+/* implement hook_theme*/
+
+function deluxe_user_theme() {
+  $module_path = drupal_get_path('module', 'deluxe_user');
+  $base = array(
+    'path' => "$module_path/templates",
+  );
+  return array(
+    'deluxe_user_myaccount' => $base + array(
+      'template' => 'deluxe-user-myaccount-menu',
+      'variables' => array('user_menu_data' => NULL,),
+    ),
+  );
+}
+
+
+function deluxe_user_block_content(){
+  drupal_add_css(drupal_get_path('module', 'deluxe_user') . '/css/myaccount-menu.css');
+  $user_menu_data = array();
+
+  $attributes = array(
+    'class' => 'dropdown-menu',
+  );
+
+  $items = array(
+    l('Login', '/user/login',
+       array('attributes' => array('id' => 'login-action'))
+     ),
+    l('My Jobs', '/myaccount/getcustomerjobs',
+      array('attributes' => array('onclick' => 'return false;'))
+    ),
+    l('My Account', '/myaccount' ,
+      array('attributes' => array('onclick' => 'return false;'))
+    ),
+  );
+
+  $user_menu_data['menu_list'] = theme('item_list', array('items' => $items, 'attributes' => $attributes));
+  return theme('deluxe_user_myaccount', array('user_menu_data' => $user_menu_data));
+}
+
+
+/* user login process*/
+function deluxe_user_form_alter(&$form, &$form_state, $form_id){
+  if ( $form_id == 'user_login'){
+    unset($form['#validate']);
+    $form['name']['#title'] = 'Username* (Email address used to create account)';
+    $form['pass']['#description'] = '';
+    $form['links'] = array(
+      '#markup' => '<div class="item-list"><ul><li class="last"><a href="javascript:void(0);" title="Forgot your password.">Forgot your password</a></li> </ul></div>',
+      '#weight' => 10,
+    );
+    $form['#validate'] = _deluxe_user_authentication_api();
+
+  }
+}
+
+function _deluxe_user_authentication_api(){
+  return array('deluxe_user_validate', 'deluxe_user_login_authenticate_validate', 'deluxe_user_login_final_validate');
+}
+
+function deluxe_user_validate( $form, &$form_state ){
+  $username  = $form_state['values']['name'];
+  $password  = $form_state['values']['pass'];
+  /*$psprint_session_id = 'fh0i5ti5hel0dumnmph3o35j';
+    $visitor_id = 'c306d2d3437750be';
+  */
+  $post_data = array(
+    'username' => $username,
+    'password' => $password,
+  );
+  $post_data = http_build_query($post_data, '', '&');
+  $loggedin_user_service = 'https://www.psprint.com/api/internal/user/customer?';
+  $request_query = $loggedin_user_service . '' . $post_data;
+    $curl = curl_init();
+    curl_setopt ($curl, CURLOPT_SSL_VERIFYPEER, 0);
+    curl_setopt ($curl, CURLOPT_SSL_VERIFYHOST, 0);
+    curl_setopt ($curl, CURLOPT_HEADER, 0);
+    curl_setopt ($curl, CURLOPT_RETURNTRANSFER, 1);
+    /*$cookies = '_psp_ecommerce_sid=' . $psprint_session_id . ';';
+      curl_setopt ($curl, CURLOPT_COOKIE, $cookies);
+    */
+    curl_setopt ($curl, CURLOPT_URL, $post_data);
+    curl_setopt ($curl, CURLOPT_URL, $request_query);
+    $response_results = curl_exec ($curl);
+    $result = drupal_json_decode($response_results);
+
+    //https://www.psprint.com/api/internal/sessionstate/loggedinuser
+}
+
+
+/**
+ * A validate handler on the login form. Check supplied username/password
+ * against local users table. If successful, $form_state['uid']
+ * is set to the matching user ID.
+ */
+function deluxe_user_login_authenticate_validate($form, &$form_state) {
+  $password = trim($form_state['values']['pass']);
+  if (!empty($form_state['values']['name']) && !empty($password)) {
+    $account = db_query("SELECT * FROM {users} WHERE name = :name AND status = 1", array(':name' => $form_state['values']['name']))->fetchObject();
+    if ($account) {
+      if (variable_get('user_failed_login_identifier_uid_only', FALSE)) {
+        // Register flood events based on the uid only, so they apply for any
+        // IP address. This is the most secure option.
+        $identifier = $account->uid;
+      }
+    }
+    // We are not limited by flood control, so try to authenticate.
+    // Set $form_state['uid'] as a flag for user_login_final_validate().
+    $form_state['uid'] = user_authenticate($form_state['values']['name'], $password);
+  }
+}
+
+
+/**
+ * The final validation handler on the login form.
+ *
+ * Sets a form error if user has not been authenticated, or if too many
+ * logins have been attempted. This validation function should always
+ * be the last one.
+ */
+function deluxe_user_login_final_validate($form, &$form_state) {
+  if (empty($form_state['uid'])) {
+    $fields = array(
+    'name' => $form_state['values']['name'],
+    'pass' => $form_state['values']['pass'],
+    'status' => 1,
+    'init' => 'email address',
+    'roles' => array(
+      DRUPAL_AUTHENTICATED_RID => 'authenticated user',
+    ),
+  );
+    //the first parameter is left blank so a new user is created
+    $account = user_save('', $fields);
+  }
+  else{
+
+  }
+}
+/**
+ * Submit handler for the login form. Load $user object and perform standard login
+ * tasks. The user is then redirected to the My Account page. Setting the
+ * destination in the query string overrides the redirect.
+ */
+function deluxe_user_login_submit($form, &$form_state) {
+  global $user;
+  $user = user_load($form_state['uid']);
+  $form_state['redirect'] = 'user/' . $user->uid;
+
+  user_login_finalize($form_state);
+}

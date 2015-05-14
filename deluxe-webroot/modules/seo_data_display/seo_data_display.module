@@ -1,0 +1,158 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function seo_data_display_menu() {
+  $items = array();
+
+  $items['admin/config/seo/profiles'] = array(
+    'title' => 'SEO Profile Authentication',
+    'description' => 'Configure SEO Profile Authentication settings.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('seo_profile_form_settings'),
+    'access arguments' => array('administer flexslider'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 2,
+    'file' => 'seo_data_display.admin.inc',
+  );
+
+  return $items;
+}
+
+/* get seo data info from seo_data table*/
+
+function _seo_data_display_by_pageid($webpage_id = ""){
+  $node_id = _deluxe_core_get_nid_from_url();
+  $node    = node_load($node_id);
+  if ($node !=""):
+    $tanent  = _deluxe_core_tenantinfo($node->field_tanents['und'][0]['value']);
+    $webpage_id = ($webpage_id !="") ? $webpage_id : $tanent['field_pageid_value'];
+
+    $query = db_select('SeoData', 'sd');
+    $query->fields('sd', array('CreatedBy', 'Created', 'IsActive', 'SeoDataID', 'WebPageID', 'Version', 'Title', 'Description', 'Canonical', 'SeoCopyBlock', 'Robots', 'PageType', 'Authorship', 'OpenGraphType', 'OpenGraphTitle', 'OpenGraphDescription', 'OpenGraphUrl', 'OpenGraphImage', 'TwitterCard', 'TwitterTitle', 'TwitterDescription', 'TwitterImage', 'TwitterUrl', 'SchemaType', 'SchemaName', 'SchemaDescription', 'SchemaImage', 'Updated', 'UpdatedBy'));
+    $query->condition('WebPageID', $webpage_id, '=');
+    $result = $query->execute()->fetchAssoc();
+  return $result;
+  endif;
+}
+
+function _seo_data_display_generate_tags(){
+  $seo_data_tags = _seo_data_display_by_pageid();
+  $community_code = $_SESSION['community'];
+  $na_value = "N/A";
+  $meta_tags = array(
+    0 => array(
+      'meta' => 'meta',
+      'name' => "msvalidate.01",
+      'content' => variable_get('msvalidate_01_' . $community_code),
+    ),
+    1 => array(
+      'meta' => 'meta',
+        'name' => 'y_key',
+          'content' => variable_get('y_key_' . $community_code),
+    ),
+    2 => array(
+      'meta' => 'meta',
+        'name' => 'p:domain_verify',
+          'content' => variable_get('domain_verify_' . $community_code),
+    ),
+    3 => array(
+      'meta' => 'meta',
+        'name' => 'google-site-verification',
+          'content' => variable_get('google_site_verification_' . $community_code),
+    ),
+    4 => array(
+      'meta' => 'meta',
+      'name' => 'description',
+      'content' => (strcasecmp($seo_data_tags['Description'], $na_value)) ? $seo_data_tags['Description']:''
+    ),
+    5 => array(
+      'link' => 'link',
+      'rel' => 'canonical',
+      'href' => (strcasecmp($seo_data_tags['Canonical'], $na_value )) ? $seo_data_tags['Canonical']:''
+    ),
+    6 => array(
+      'meta' => 'meta',
+      'name' => 'ROBOTS',
+      'content' => (strcasecmp($seo_data_tags['Robots'], $na_value )) ? $seo_data_tags['Robots']:''
+    ),
+    7 => array(
+      'meta' => 'meta',
+      'name' => 'authorship',
+      'content' => (strcasecmp($seo_data_tags['Authorship'], $na_value )) ? $seo_data_tags['Authorship']:''
+    ),
+    8 => array(
+      'meta' => 'meta',
+      'property' => 'og:type',
+      'content' => (strcasecmp($seo_data_tags['OpenGraphType'], $na_value)) ? $seo_data_tags['OpenGraphType']:''
+    ),
+    9 => array(
+      'meta' => 'meta',
+      'property' => 'og:title',
+      'content' => (strcasecmp($seo_data_tags['OpenGraphTitle'],$na_value))?$seo_data_tags['OpenGraphTitle' ]:''
+    ),
+    10 => array(
+      'meta' => 'meta',
+      'property' => 'og:description',
+      'content' => (strcasecmp($seo_data_tags['OpenGraphDescription'], $na_value)) ? $seo_data_tags['OpenGraphDescription']:''
+    ),
+    11 => array(
+      'meta' => 'meta',
+      'property' => 'og:url',
+      'content' => (strcasecmp($seo_data_tags['OpenGraphUrl'], $na_value)) ? $seo_data_tags['OpenGraphUrl']:''
+    ),
+    12 => array(
+      'meta' => 'meta',
+      'property' => 'og:image',
+      'content' => (strcasecmp($seo_data_tags['OpenGraphImage'], $na_value)) ? $seo_data_tags['OpenGraphImage']:''
+    ),
+    13 => array(
+      'meta' => 'meta',
+      'name' => 'twitter:card',
+      'content' => (strcasecmp($seo_data_tags['TwitterCard'],$na_value))?$seo_data_tags['TwitterCard']:''
+    ),
+    14 => array(
+      'meta' => 'meta',
+      'name' => 'twitter:title',
+      'content' => (strcasecmp($seo_data_tags['TwitterTitle'], $na_value)) ? $seo_data_tags['TwitterTitle']:''
+    ),
+    15 => array(
+      'meta' => 'meta',
+      'name' => 'twitter:description',
+      'content' => (strcasecmp($seo_data_tags['TwitterDescription'], $na_value)) ? $seo_data_tags['TwitterDescription']:''
+    ),
+
+    16 => array(
+      'meta' => 'meta',
+     'name' => 'twitter:image',
+      'content' => (strcasecmp($seo_data_tags['TwitterImage'], $na_value )) ? $seo_data_tags['TwitterImage']:''
+    ),
+    17 => array(
+      'meta' => 'meta',
+      'name' => 'twitter:url',
+      'content' => (strcasecmp($seo_data_tags['TwitterUrl'], $na_value)) ? $seo_data_tags['TwitterUrl']:''
+    ),
+    18 => array(
+      'meta' => 'meta',
+      'itemprop' => 'type',
+      'content' => (strcasecmp($seo_data_tags['SchemaType'], $na_value )) ? $seo_data_tags['SchemaType'] : ''
+    ),
+    19 => array(
+      'meta' => 'meta',
+      'itemprop' => 'name',
+      'content' => (strcasecmp($seo_data_tags['SchemaName'], $na_value)) ? $seo_data_tags['SchemaName']:''
+    ),
+    20 => array(
+      'meta' => 'meta',
+      'itemprop' => 'description',
+      'content' => (strcasecmp($seo_data_tags['SchemaDescription'], $na_value)) ? $seo_data_tags['SchemaDescription']:''
+    ),
+    21 => array(
+      'meta' => 'meta',
+      'itemprop' => 'image',
+      'content' => (strcasecmp($seo_data_tags['SchemaImage'], $na_value )) ? $seo_data_tags['SchemaImage']:''
+    )
+  );
+  return $meta_tags;
+}

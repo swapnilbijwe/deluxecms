@@ -1,0 +1,119 @@
+<?php
+
+/**
+* Implement hook_init
+**/
+module_load_include('inc', 'deluxe_core', 'deluxe_core.page');
+
+function deluxe_core_init(){
+  /*Assign community code*/
+  drupal_session_start();
+  $community_info= _deluxe_core_community_code($_SERVER['SERVER_NAME']);
+  $_SESSION['community']    = $community_info['field_community_code_value'];
+  $_SESSION['community_id'] = $community_info['entity_id'];
+  drupal_add_css(drupal_get_path('module', 'deluxe_core') . '/css/deluxe_core.css', array('group' => CSS_DEFAULT, 'every_page' => TRUE));
+}
+
+/**
+ * Implements hook_menu().
+ */
+function deluxe_core_menu() {
+  $items['stores/autocomplete/'] = array(
+      'title' => 'Autocomplete stores',
+      'page callback' => 'community_store_autocomplete',
+      'access arguments' => array('access content'),
+      'type' => MENU_CALLBACK,
+      'file' => 'product_tools.pages.inc',
+    );
+
+  $items['community/autocomplete/'] = array(
+      'title' => 'Autocomplete community',
+      'page callback' => 'community_autocomplete',
+      'access arguments' => array('access content'),
+      'type' => MENU_CALLBACK,
+      'file' => 'product_tools.pages.inc',
+    );
+    return $items;
+}
+
+/*Implement hook_form_alter*/
+
+function deluxe_core_form_alter($form, &$form_state, $form_id){
+
+}
+
+function _deluxe_core_community_code($url){
+  $sub_query = db_select('field_data_field_community_url', 'cu');
+  $sub_query->fields('cu', array('entity_id'));
+  $sub_query->condition('field_community_url_value',  '%'. db_like($url) . '%', 'LIKE');
+  $get_nid = $sub_query->execute()->fetchAssoc();
+
+  $query= db_select('field_data_field_community_code', 'cv');
+  $query->fields('cv', array('field_community_code_value', 'entity_id'));
+  $query->condition('entity_id', $get_nid, '=');
+  $result = $query->execute()->fetchAssoc();
+  return $result;
+}
+
+/* Implement hook__views_query_alter*/
+function deluxe_core_views_query_alter(&$view, &$query){
+  switch ($view->current_display) {
+    case 'promotion_references':
+      unset($view->query->where[1]['conditions'][0]['value']);
+      $view->query->where[1]['conditions'][0]['value'] = $_SESSION['community'];
+      break;
+    case 'products_promotion':
+      unset($view->query->where[1]['conditions'][1]['value']);
+      $view->query->where[1]['conditions'][1]['value'] = $_SESSION['community'];
+      break;
+    default:
+      # code...
+      break;
+  }
+}
+
+function _deluxe_core_get_nid_from_url() {
+  $node = menu_get_object("node", 1, current_path());
+  $nid  = $node->nid;
+  return $nid;
+}
+
+function _deluxe_core_generate_breadcrumb($value=''){
+
+  $nid = _deluxe_core_get_nid_from_url();
+  $node  = node_load($nid);
+  $node_title = $node->field_select_product_category['und'][0]['taxonomy_term']->name;
+
+  $breadcrumb = "";
+
+  if (isset($_GET['Quantity'])){
+    $breadcrumb .=$_GET['Quantity'] . " ";
+  }
+  if (isset($_GET['size'] )) {
+    $size_array = explode('x', $_GET['size']);
+    $size = ($_GET['size']) ?  $size_array[0] . '" x ' . $size_array['1'] . '"' : "";
+    $breadcrumb .= $size;
+  }
+  if (isset($_GET['size'])) {
+     $breadcrumb .= ' UV Coated';
+  }
+  $breadcrumb .= $node->title;
+
+  $breadcrumb_title  = $breadcrumb;
+
+  $breadcrumb = array();
+  $breadcrumb[] = t($node_title);
+  $breadcrumb[] = t($breadcrumb_title);
+  return $breadcrumb;
+}
+
+function _deluxe_core_tenantinfo($itemid){
+  $query = db_select('field_data_field_pageid', 'pi');
+  $query->leftJoin('field_data_field_catalog_id', 'ci', 'ci.entity_id = pi.entity_id');
+  $query->fields('ci', array('field_catalog_id_value'));
+  $query->fields('pi', array('field_pageid_value'));
+  $query->condition('ci.entity_id', $itemid, '=');
+  $query->condition('pi.entity_id', $itemid, '=');
+  $result = $query->execute()->fetchAssoc();
+  return $result;
+}

@@ -1,0 +1,23 @@
+/* This file will hold styles for the mobile version of your website (mobile first). */
+/* This also can include ANY global CSS that applies site-wide. Unless overwritten by a more specific style rule, CSS declarations in global.css will apply site-wide. */
+
+/*footer menu*/
+#section-footer ul li.expanded {
+  float: left;
+    list-style: outside none none;
+    width: 240px;
+}
+#mini-panel-clone_of_header .pane-node{
+  float: left;
+  width: 100%;
+}
+.flexslider .slides img{
+  width: auto;
+}
+#product-describ h3{
+ background: url("../images/separator-horizontal.png") no-repeat scroll center 22px rgba(0, 0, 0, 0);
+    font-size: 14px;
+    margin: 23px auto 17px;
+    min-height: 37px;
+    text-align: center;
+  }

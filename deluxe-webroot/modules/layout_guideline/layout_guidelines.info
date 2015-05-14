@@ -1,0 +1,6 @@
+name = Layout guideline
+package = Products
+description = Manage Products Layout gudeline filter and display.
+version = "7.x-1.0"
+core = "7.x"
+project = "layout-guidelines"

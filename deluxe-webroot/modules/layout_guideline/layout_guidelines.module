@@ -1,0 +1,28 @@
+<?php
+
+
+
+/*Implement hook_menu*/
+
+function layout_guidelines_menu(){
+  $items = array();
+  $items['layout-templates'] = array(
+  'title' => 'Try our free, easy-to-use, downloadable layout guidelines at'. $_SESSION['community'],
+  'description' => 'Try our free, easy-to-use, downloadable layout guidelines at'. $_SESSION['community'],
+  'page callback' => 'layout_guidelines_page',
+  'access arguments' => array('access content'),
+  'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+
+function layout_guidelines_page(){
+  $query = db_select('taxonomy_term_data', 'ttd');
+  $query->Innerjoin('taxonomy_vocabulary','tv','ttd.vid = tv.vid');
+  $query->fields('ttd', array('tid', 'name', 'vid'))
+  $query->condition('tv.machine_name', 'product_category', 'IN')
+  $result = $query->execute->fetchAll();
+  return $result;
+}

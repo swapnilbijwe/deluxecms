@@ -1,0 +1,43 @@
+<?php
+
+/* Implement header user menus block*/
+function pdp_calculator_block_info() {
+  $blocks = array();
+
+  $blocks['pdp_calculator_api'] = array(
+    'info' => t('PDP page calculator API'),
+  );
+
+  return $blocks;
+}
+
+function pdp_calculator_block_view($delta='') {
+  $block = array();
+  switch ($delta) {
+    case 'pdp_calculator_api':
+      $block['subject'] = t('PDP page calculator APi');
+      $block['content'] = _pdp_calculator_api();
+      break;
+  }
+  return $block;
+}
+
+/* implement hook_theme*/
+
+function pdp_calculator_theme() {
+  $module_path = drupal_get_path('module', 'pdp_calculator');
+  $base = array(
+    'path' => "$module_path/templates",
+  );
+  return array(
+    'pdp_page_calculator' => $base + array(
+      'template' => 'pdp-page-calculator',
+      'variables' => array('pdp_calculator' => NULL),
+    ),
+  );
+}
+
+function _pdp_calculator_api(){
+  $pdp_calculator = array();
+  return theme('pdp_page_calculator', array('pdp_calculator' => $pdp_calculator));
+}
